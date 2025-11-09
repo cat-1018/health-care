@@ -1,40 +1,72 @@
 import React from 'react';
+import { Record } from '../App'; // App.tsxから型をインポート
+import WeightChart from './WeightChart';
+import BmiChart from './BmiChart';
 
-const Dashboard = () => {
-  // Dummy data for now
-  const records = [
-    { date: '2025-11-09', calories: 2200, weight: 75, height: 175 },
-    { date: '2025-11-08', calories: 2500, weight: 75.2, height: 175 },
-  ];
+interface DashboardProps {
+  records: Record[];
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ records }) => {
+  const showCharts = records.length >= 2;
 
   return (
-    <div className="card">
-      <div className="card-header">
-        <h2>Your Records</h2>
+    <>
+      {showCharts && (
+        <div className="row mb-4">
+          <div className="col-md-6">
+            <div className="card">
+              <div className="card-body">
+                <WeightChart records={records} />
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card">
+              <div className="card-body">
+                <BmiChart records={records} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="card">
+        <div className="card-header">
+          <h2>Your Records</h2>
+        </div>
+        <div className="card-body">
+          {records.length === 0 ? (
+            <p className="text-center">No records yet. Add your first record above!</p>
+          ) : (
+            <div className="table-responsive">
+              <table className="table table-striped table-hover mb-0">
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Calories (kcal)</th>
+                    <th scope="col">Weight (kg)</th>
+                    <th scope="col">Height (cm)</th>
+                    <th scope="col">BMI</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {records.map((record, index) => (
+                    <tr key={index}>
+                      <td>{record.date}</td>
+                      <td>{record.calories}</td>
+                      <td>{record.weight}</td>
+                      <td>{record.height}</td>
+                      <td>{record.bmi}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
-      <div className="card-body">
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col">Date</th>
-              <th scope="col">Calories (kcal)</th>
-              <th scope="col">Weight (kg)</th>
-              <th scope="col">Height (cm)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {records.map((record, index) => (
-              <tr key={index}>
-                <td>{record.date}</td>
-                <td>{record.calories}</td>
-                <td>{record.weight}</td>
-                <td>{record.height}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    </>
   );
 };
 
